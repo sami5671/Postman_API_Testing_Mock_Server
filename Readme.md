@@ -45,19 +45,19 @@ The accompanying Postman collection (`Mock_Server_Testing.postman_collection.jso
 
 ## 🧪 Test Scenarios & API Endpoints
 
-The test suite systematically runs the following workflow, ensuring proper data persistence and mutation across requests:
+The test suite systematically runs the following workflow. Below is the detailed breakdown of the exact assertions made and their execution results from the latest test run:
 
-| #   | Request Name            | Method   | Endpoint             | Description & Assertions                                                                                                                                        |
-| --- | ----------------------- | -------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Create User**         | `POST`   | `/users`             | Generates a user with dynamic fake data (`{{$randomFullName}}`). Asserts HTTP `201 Created` and saves the newly generated `user_id` to the Postman environment. |
-| 2   | **Get Single User**     | `GET`    | `/users/{{user_id}}` | Fetches the newly created user. Asserts HTTP `200 OK` and cross-verifies if the ID matches the environment variable.                                            |
-| 3   | **Get User List**       | `GET`    | `/users`             | Retrieves all users in the database. Asserts HTTP `200 OK` and validates that the response body is a JSON Array.                                                |
-| 4   | **Update User Data**    | `PUT`    | `/users/{{user_id}}` | Replaces the entire user object. Asserts HTTP `200 OK` and validates that the `name` field has been fully updated.                                              |
-| 5   | **Get Updated Data**    | `GET`    | `/users/{{user_id}}` | Fetches the user again to ensure the `PUT` operation was persistently saved on the mock server.                                                                 |
-| 6   | **Update Partial Data** | `PATCH`  | `/users/{{user_id}}` | Updates only specific fields (e.g., `role`). Asserts HTTP `200 OK` and checks that the targeted field is successfully updated.                                  |
-| 7   | **Get Updated Patch**   | `GET`    | `/users/{{user_id}}` | Fetches the user to verify the `PATCH` operation persisted successfully.                                                                                        |
-| 8   | **Delete User Data**    | `DELETE` | `/users/{{user_id}}` | Deletes the specific user from the database. Asserts HTTP `200 OK`.                                                                                             |
-| 9   | **Verify Deleted Data** | `GET`    | `/users/{{user_id}}` | Attempts to fetch the deleted user. **Crucially asserts HTTP `404 Not Found`**, verifying the resource no longer exists.                                        |
+| # | Request Name | Method | Endpoint | Assertions Tested | Test Status |
+|---|--------------|--------|----------|-------------------|-------------|
+| 1 | **Create User** | `POST` | `/users` | ✅ Status code is 201 | 🟢 **Passed** |
+| 2 | **Get Single User** | `GET` | `/users/{{user_id}}` | ✅ Status code is 200 <br> ❌ User ID exists | 🔴 **Failed** <br> *(Error: expected 'id' to deeply equal NaN - caused by `parseInt()` on string ID)* |
+| 3 | **Get User List** | `GET` | `/users` | ✅ Status code is 200 <br> ✅ Response is array | 🟢 **Passed** |
+| 4 | **Update User Data** | `PUT` | `/users/{{user_id}}` | ✅ PUT update successful <br> ❌ SyntaxError (data variable) | 🔴 **Failed** <br> *(Script error: Identifier 'data' already declared)* |
+| 5 | **Get Updated Data** | `GET` | `/users/{{user_id}}` | *(No assertions defined)* | ⚪ **N/A** |
+| 6 | **Update Partial Data**| `PATCH` | `/users/{{user_id}}` | ✅ PATCH successful <br> ❌ SyntaxError (data variable) | 🔴 **Failed** <br> *(Script error: Identifier 'data' already declared)* |
+| 7 | **Get Updated Patch** | `GET` | `/users/{{user_id}}` | *(No assertions defined)* | ⚪ **N/A** |
+| 8 | **Delete User Data** | `DELETE`| `/users/{{user_id}}` | ✅ Delete successful (Expects 200) | 🟢 **Passed** |
+| 9 | **Verify Deleted Data**| `GET` | `/users/{{user_id}}` | ✅ User not found (Expects 404) | 🟢 **Passed** |
 
 ---
 
