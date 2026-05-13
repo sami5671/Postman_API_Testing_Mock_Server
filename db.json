@@ -1,0 +1,41 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Sami",
+      "email": "sami@gmail.com",
+      "role": "Tester"
+    },
+    {
+      "name": "Updated Sami",
+      "email": "updated@gmail.com",
+      "role": "Senior Tester",
+      "id": "kZ5otz6EDBY"
+    },
+    {
+      "name": "Updated Sami",
+      "email": "updated@gmail.com",
+      "role": "Senior Tester",
+      "id": "rlO6qll87qw"
+    },
+    {
+      "name": "Vicky Weissnat",
+      "email": "Marielle0@yahoo.com",
+      "role": "Tester",
+      "id": "sqloQFm3pX8"
+    },
+    {
+      "name": "Updated Sami",
+      "email": "updated@gmail.com",
+      "role": "Senior Tester",
+      "id": "QQuC8wSkyDo"
+    },
+    {
+      "name": "Zachary Vandervort",
+      "email": "Marianne_King@gmail.com",
+      "role": "Tester",
+      "id": "cDs3xfkNz-w"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
