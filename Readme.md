@@ -1,73 +1,144 @@
-# Mock Server API Testing with Postman and Newman
+<div align="center">
+  <h1>🚀 Automated API Testing with Postman & Newman</h1>
+  <p>
+    <i>A comprehensive, end-to-end API testing framework utilizing JSON Server for mocking, Postman for collection authoring, and Newman for automated CLI execution and reporting.</i>
+  </p>
 
-This repository contains a complete API testing setup using Postman, Newman, and `json-server`. It demonstrates how to create a local mock server and perform automated end-to-end CRUD testing of the API endpoints, followed by generating a professional HTML report.
+  <!-- Badges -->
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
+  <img src="https://img.shields.io/badge/Newman-000000?style=for-the-badge&logo=postman&logoColor=FF6C37" alt="Newman" />
+  <img src="https://img.shields.io/badge/JSON_Server-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="JSON Server" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+</div>
 
-## 📌 Project Overview
-This project simulates a fully functional REST API for managing `users` using `json-server`. It includes a Postman collection (`Mock_Server_Testing.postman_collection.json`) containing various requests to perform Create, Read, Update, and Delete (CRUD) operations, along with automated tests written in JavaScript.
+<br />
 
-### 🎯 Features Tested:
-1. **Create User** (`POST`): Creates a new user using dynamic random data (`{{$randomFullName}}`, `{{$randomEmail}}`). Validates status code 201 and stores the generated `user_id` as an environment variable.
-2. **Get Single User** (`GET`): Retrieves the user created in the previous step to verify successful data persistence.
-3. **Get User List** (`GET`): Fetches all users and validates that the response is an array.
-4. **Update User Data** (`PUT`): Completely updates the user data and validates the updated fields.
-5. **Get Updated Data** (`GET`): Verifies if the `PUT` operation successfully modified the record on the server.
-6. **Update Partial Data** (`PATCH`): Partially updates the user's role and validates the changes.
-7. **Get Updated Patch Data** (`GET`): Verifies the partial update.
-8. **Delete User Data** (`DELETE`): Deletes the user using the saved environment variable `user_id`.
-9. **Verify Deleted Data** (`GET`): Attempts to fetch the deleted user and verifies that a 404 Not Found error is returned.
+## 📋 Table of Contents
 
-## 🚀 Prerequisites
-To run this project on your local machine, you need to have [Node.js](https://nodejs.org/) installed.
+- [📖 Project Overview](#-project-overview)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🧪 Test Scenarios & API Endpoints](#-test-scenarios--api-endpoints)
+- [⚙️ Prerequisites](#️-prerequisites)
+- [🚀 Setup & Installation](#-setup--installation)
+  - [1. Mock Server Setup](#1-mock-server-setup)
+  - [2. Automated Testing with Newman](#2-automated-testing-with-newman)
+- [📊 Reporting & Analysis](#-reporting--analysis)
+- [📂 Repository Structure](#-repository-structure)
 
-## 🛠️ Setup Instructions
+---
 
-### 1. Creating the Mock Server
+## 📖 Project Overview
 
-We use `json-server` to mock a full fake REST API with zero coding.
+This repository serves as a blueprint for conducting fully automated REST API testing. Instead of relying on a live production backend, this project utilizes **`json-server`** to instantly deploy a local, stateful mock server.
 
-**Step 1:** Install `json-server` globally on your machine.
+The accompanying Postman collection (`Mock_Server_Testing.postman_collection.json`) dynamically tests a full **CRUD (Create, Read, Update, Delete)** lifecycle for a `users` resource, implementing variable chaining, automated assertions, and environment management.
+
+---
+
+## 🏗️ System Architecture
+
+1. **Mock Backend (`json-server`)**: Provides a dynamic REST API simulating real-world database behaviors (saving, updating, and deleting data) using a single `db.json` file.
+2. **Test Scripts (`Postman`)**: Contains pre-request scripts and test assertions written in JavaScript (using the Chai assertion library) to validate status codes, schema compliance, and data integrity.
+3. **CLI Runner & Reporter (`Newman` & `htmlextra`)**: Executes the Postman collection headlessly from the terminal and generates highly detailed, interactive HTML execution reports.
+
+---
+
+## 🧪 Test Scenarios & API Endpoints
+
+The test suite systematically runs the following workflow, ensuring proper data persistence and mutation across requests:
+
+| #   | Request Name            | Method   | Endpoint             | Description & Assertions                                                                                                                                        |
+| --- | ----------------------- | -------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Create User**         | `POST`   | `/users`             | Generates a user with dynamic fake data (`{{$randomFullName}}`). Asserts HTTP `201 Created` and saves the newly generated `user_id` to the Postman environment. |
+| 2   | **Get Single User**     | `GET`    | `/users/{{user_id}}` | Fetches the newly created user. Asserts HTTP `200 OK` and cross-verifies if the ID matches the environment variable.                                            |
+| 3   | **Get User List**       | `GET`    | `/users`             | Retrieves all users in the database. Asserts HTTP `200 OK` and validates that the response body is a JSON Array.                                                |
+| 4   | **Update User Data**    | `PUT`    | `/users/{{user_id}}` | Replaces the entire user object. Asserts HTTP `200 OK` and validates that the `name` field has been fully updated.                                              |
+| 5   | **Get Updated Data**    | `GET`    | `/users/{{user_id}}` | Fetches the user again to ensure the `PUT` operation was persistently saved on the mock server.                                                                 |
+| 6   | **Update Partial Data** | `PATCH`  | `/users/{{user_id}}` | Updates only specific fields (e.g., `role`). Asserts HTTP `200 OK` and checks that the targeted field is successfully updated.                                  |
+| 7   | **Get Updated Patch**   | `GET`    | `/users/{{user_id}}` | Fetches the user to verify the `PATCH` operation persisted successfully.                                                                                        |
+| 8   | **Delete User Data**    | `DELETE` | `/users/{{user_id}}` | Deletes the specific user from the database. Asserts HTTP `200 OK`.                                                                                             |
+| 9   | **Verify Deleted Data** | `GET`    | `/users/{{user_id}}` | Attempts to fetch the deleted user. **Crucially asserts HTTP `404 Not Found`**, verifying the resource no longer exists.                                        |
+
+---
+
+## ⚙️ Prerequisites
+
+Ensure the following dependencies are installed on your local machine:
+
+- [Node.js](https://nodejs.org/) (v14 or higher recommended)
+- [Postman](https://www.postman.com/downloads/) (Optional: for viewing/editing the collection manually)
+
+---
+
+## 🚀 Setup & Installation
+
+### 1. Mock Server Setup
+
+The backend is driven entirely by `json-server`.
+
+**Step 1:** Install `json-server` globally:
+
 ```bash
 npm install -g json-server
 ```
 
-**Step 2:** Ensure you have a `db.json` file in your root directory. This file acts as your database. Our `db.json` starts with an empty `users` array or dummy data.
+**Step 2:** Start the Mock Server. Navigate to the project root and run:
 
-**Step 3:** Start the JSON Server.
 ```bash
 json-server --watch db.json
 ```
-*Note: By default, the server will start on `http://localhost:3000`.*
 
-**Step 4:** The Postman collection `Mock_Server_Testing.postman_collection.json` has already been created and exported in this repository.
+> **Note:** The server will start on `http://localhost:3000`. Keep this terminal window open!
 
-### 2. Newman Integration for Automated Execution
+### 2. Automated Testing with Newman
 
-Newman is a command-line collection runner for Postman. It allows you to run and test a Postman collection directly from the command line.
+Newman allows you to execute the entire test lifecycle locally with a single command.
 
-**Step 1:** Install Newman globally.
+**Step 1:** Install Newman and the HTMLExtra reporter globally:
+
 ```bash
 npm install -g newman
-```
-
-**Step 2:** Install the `htmlextra` reporter for generating professional HTML test reports.
-```bash
 npm install -g newman-reporter-htmlextra
 ```
 
-**Step 3:** Run the Postman Collection via Newman.
-Ensure your mock server is running (`json-server --watch db.json`), then execute the following command:
+**Step 2:** Execute the Collection. Open a _new_ terminal window (leave the mock server running) and execute:
+
 ```bash
-newman run Mock_Server_Testing.postman_collection.json --env-var "base_url=http://localhost:3000" -r htmlextra --reporter-htmlextra-export ./results/report.html
+newman run Mock_Server_Testing.postman_collection.json \
+  --env-var "base_url=http://localhost:3000" \
+  -r htmlextra \
+  --reporter-htmlextra-export ./results/API_Test_Report.html
 ```
 
-## 📊 Test Results & Analysis
+---
 
-When the above Newman command finishes executing, it will generate a rich HTML report in the `./results/report.html` file. 
+## 📊 Reporting & Analysis
 
-The test suite thoroughly validates:
-- **Status Codes:** Ensures endpoints return expected status codes (200 OK, 201 Created, 404 Not Found).
-- **Data Integrity:** Cross-checks if the data created/updated matches the payload sent.
-- **Variable Chaining:** Demonstrates dynamically passing variables between requests using `pm.environment.set` and `pm.environment.get`. 
-- **Array and Type Verification:** Validates the structural integrity of the JSON responses (e.g., checking if the response is a valid array).
+After the `newman run` command completes, an interactive execution report is generated at `./results/API_Test_Report.html`.
 
-Open `./results/report.html` in any web browser to view detailed assertions, request payloads, response bodies, and the overall pass/fail percentage of the test runs.
+This report provides a granular analysis of the test run, including:
+
+- **Execution Overview:** Total requests sent, data transferred, and overall pass/fail percentage.
+- **Request Details:** Full visibility into Request Headers, Request Bodies, Response Headers, and Response Bodies for every single endpoint.
+- **Failed Tests:** A dedicated section highlighting any failed assertions, helping quickly isolate API defects.
+- **Environment State:** A snapshot of variables (like `user_id`) as they were dynamically captured during runtime.
+
+---
+
+## 📂 Repository Structure
+
+```text
+📦 Mock-Server-API-Testing
+ ┣ 📂 results/
+ ┃ ┗ 📜 API_Test_Report.html                # Generated Newman execution report
+ ┣ 📜 Mock_Server_Testing.postman_collection.json # Postman Test Collection
+ ┣ 📜 Local_API.postman_environment.json    # Exported Environment variables
+ ┣ 📜 db.json                               # JSON Server Database file
+ ┗ 📜 Readme.md                             # Project Documentation
+```
+
+<br />
+
+<div align="center">
+  <i>Developed for Quality Assurance and Automated API Validation.</i>
+</div>
